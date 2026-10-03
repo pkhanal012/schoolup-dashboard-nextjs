@@ -1,0 +1,590 @@
+@import "tailwindcss";
+
+/* Theme is a class on <html>, set before first paint — not a media query.
+   `dark` styles anything drawn on dark tokens: the whole app in the Dark theme,
+   and the sidebar and top bar ([data-chrome]) in the Default theme. */
+@custom-variant dark (&:where(.dark, .dark *, .theme-default [data-chrome], .theme-default [data-chrome] *));
+
+/* Which theme is selected, regardless of what a given region is drawn on. */
+@custom-variant mode-dark (&:where(.dark, .dark *));
+@custom-variant mode-default (&:where(.theme-default, .theme-default *));
+
+/* Sidebar minimised to an icon rail. Same pattern as the theme: a class on
+   <html> set before first paint. Desktop only — below lg the sidebar is a drawer. */
+@custom-variant rail {
+  @media (width >= 64rem) {
+    &:where(.nav-rail, .nav-rail *) {
+      @slot;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   SchoolUp design tokens — the sticker book from the landing page, brought into
+   the app. White paper with lots of air; colour arrives in small, confident
+   doses — a pastel card, a coloured dot, a pill behind one word. Sky blue is
+   still the one action colour; the pastels (sun, pink, mint, lilac, coral)
+   are for wayfinding and delight, and green/amber/red still only mean state.
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --ground: #f7f6f2;         /* page + sidebar: the landing page's warm paper (Light theme) */
+  --surface: #ffffff;        /* main panel, cards, menus */
+  --surface-sunken: #f7f6f2; /* inset blocks, table heads — the landing's "soft" paper */
+  --surface-hover: #f0eee8;  /* row + nav hover */
+  --surface-active: #ffffff; /* current nav item: a white pill lifted off the ground */
+
+  /* Lines */
+  --line: #ecebef;           /* hairline */
+  --line-soft: #f2f1f4;      /* dividers inside a card */
+  --line-strong: #d9d7de;    /* hover / focus edge */
+
+  /* Type */
+  --ink: #17161c;            /* primary text */
+  --ink-2: #5d5b66;          /* secondary text, nav icons, counts */
+  --ink-3: #85838f;          /* tertiary, placeholders */
+  --ink-4: #bdbbc4;          /* faintest — decorative only */
+
+  /* Primary action — brand sky blue. White type on it sits near 2:1, so the
+     label is deep navy, exactly as on the landing page's sky button. */
+  --primary: #42befc;
+  --primary-hover: #22a9ec;
+  --primary-soft: #dff3fe;
+  --primary-ink: #04293c;
+
+  /* Accent — the brand hue taken darker for links, meters and focus. */
+  --accent: #0872a6;
+  --accent-hover: #065c87;
+  --accent-soft: #dff3fe;
+  --accent-line: #b5e3fa;
+
+  /* Sticker pastels, straight from the landing page. The fill is for shapes
+     and dots; the -soft tint is for cards and pills with ink type on top. */
+  --sun: #ffd23f;
+  --sun-soft: #fff4c7;
+  --pink: #ff8fcf;
+  --pink-soft: #ffe6f4;
+  --sky: #42befc;
+  --sky-soft: #dff3fe;
+  --mint: #34d399;
+  --mint-soft: #d6f6e8;
+  --lilac: #a98bff;
+  --lilac-soft: #eee8ff;
+  --coral: #ff6b4a;
+  --coral-soft: #ffe3db;
+
+  /* Semantic — state only, never decoration. Tints share the pastels. */
+  --good: #157049;
+  --good-soft: #d6f6e8;
+  --warn: #8a5d00;
+  --warn-soft: #fff4c7;
+  --bad: #c23a1c;
+  --bad-soft: #ffe3db;
+
+  --radius: 24px;
+
+  /* Elevation — a hairline ring and a soft, low shadow, like a sticker that
+     has just been pressed onto the page. */
+  --shadow-1: 0 1px 2px rgba(23, 22, 28, 0.04);
+  --shadow-2: 0 1px 2px rgba(23, 22, 28, 0.04), 0 10px 24px -14px rgba(23, 22, 28, 0.16);
+  --shadow-3: 0 2px 6px -2px rgba(23, 22, 28, 0.06), 0 18px 36px -16px rgba(23, 22, 28, 0.22);
+  --shadow-4: 0 8px 20px -8px rgba(23, 22, 28, 0.12), 0 32px 64px -24px rgba(23, 22, 28, 0.3);
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark tokens: the whole page in the Dark theme; in the Default theme only the
+   sidebar and top bar, around a light content sheet. */
+.dark,
+.theme-default [data-chrome] {
+  color-scheme: dark;
+
+  --ground: #121116;
+  --surface: #1b1a20;
+  --surface-sunken: #17161b;
+  --surface-hover: #25242b;
+  --surface-active: #2b2a32;
+
+  --line: #2b2a31;
+  --line-soft: #222128;
+  --line-strong: #3d3c45;
+
+  --ink: #f4f3f7;
+  --ink-2: #aeacb7;
+  --ink-3: #7f7d89;
+  --ink-4: #5a5862;
+
+  /* Buttons keep the brand blue; text-level accents lighten to stay legible on dark. */
+  --primary: #42befc;
+  --primary-hover: #66cdfd;
+  --primary-soft: #10344a;
+  --primary-ink: #04293c;
+
+  --accent: #6ccbfb;
+  --accent-hover: #93dbfd;
+  --accent-soft: #0e2c3e;
+  --accent-line: #1b4a66;
+
+  /* Pastels stay bright as fills; the soft tints become deep, inked versions. */
+  --sun: #ffd23f;
+  --sun-soft: #2c2512;
+  --pink: #ff8fcf;
+  --pink-soft: #2f1827;
+  --sky: #42befc;
+  --sky-soft: #0f2a3a;
+  --mint: #34d399;
+  --mint-soft: #0f2a20;
+  --lilac: #a98bff;
+  --lilac-soft: #221c3a;
+  --coral: #ff6b4a;
+  --coral-soft: #2f1a13;
+
+  --good: #6fe2b0;
+  --good-soft: #0f2a20;
+  --warn: #ffd66b;
+  --warn-soft: #2c2512;
+  --bad: #ff967d;
+  --bad-soft: #2f1a13;
+
+  /* Dark surfaces sit on black, so elevation reads through contrast, not shade. */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 2px 8px -2px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 8px 24px -6px rgba(0, 0, 0, 0.66);
+  --shadow-4: 0 16px 48px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* Default theme: the frame around the sheet takes the dark ground. */
+.theme-default {
+  --ground: #121116;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-sunken: var(--surface-sunken);
+  --color-hover: var(--surface-hover);
+  --color-active: var(--surface-active);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-ink: var(--primary-ink);
+
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+
+  --color-sun: var(--sun);
+  --color-sun-soft: var(--sun-soft);
+  --color-pink: var(--pink);
+  --color-pink-soft: var(--pink-soft);
+  --color-sky: var(--sky);
+  --color-sky-soft: var(--sky-soft);
+  --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
+  --color-lilac: var(--lilac);
+  --color-lilac-soft: var(--lilac-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+
+  --radius-card: var(--radius);
+
+  /* The landing page's rounder, friendlier scale. Every rounded-* class in the
+     app follows these, so the whole UI moves together. */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  --shadow-e1: var(--shadow-1);
+  --shadow-e2: var(--shadow-2);
+  --shadow-e3: var(--shadow-3);
+  --shadow-e4: var(--shadow-4);
+
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The landing page's display face: a grotesque with some bounce in it. */
+  --font-display: var(--font-display-face), var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: var(--font-serif-face), ui-serif, Georgia, serif;
+}
+
+/* Default every border to the hairline colour. This MUST stay inside @layer
+   base: unlayered CSS outranks every cascade layer, so at top level it would
+   beat Tailwind's own border-* utilities and nothing could ever override it. */
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+}
+
+html,
+body {
+  background: var(--ground);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* cv11 = straight-tailed l and single-storey a; ss01 tightens punctuation. */
+  font-feature-settings: "cv11", "ss01";
+  text-rendering: optimizeLegibility;
+}
+
+/* Every figure in this product is compared against another figure — never let
+   them shift width between states. */
+.font-mono,
+[class*="tabular"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* The -style longhand only: the `text-wrap` shorthand also resets wrapping,
+   and being unlayered it would override Tailwind's `truncate` everywhere. */
+h1,
+h2,
+h3 {
+  text-wrap-style: balance;
+}
+
+p {
+  text-wrap-style: pretty;
+}
+
+::selection {
+  background: var(--sun);
+  color: #17161c;
+}
+
+@layer components {
+  /* Display type, as on the landing page: tight, bold, a little bouncy. */
+  .su-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+
+  /* The landing page's dot grid. `--pc` sets the dot colour. */
+  .su-pat-dots {
+    background-image: radial-gradient(var(--pc, rgba(23, 22, 28, 0.08)) 1.5px, transparent 2px);
+    background-size: 22px 22px;
+  }
+
+  /* Light and Default themes: the ground behind the sidebar and sheet carries a
+     faint dot grid — ink dots on the paper, pale dots on the dark frame. Fixed,
+     so the sidebar and the page around the sheet line up. */
+  :root:not(.dark) .su-paper {
+    background-image: radial-gradient(var(--paper-dot) 1.2px, transparent 1.7px);
+    background-size: 22px 22px;
+    background-attachment: fixed;
+  }
+  :root:not(.dark, .theme-default) {
+    --paper-dot: rgba(23, 22, 28, 0.07);
+  }
+  .theme-default {
+    --paper-dot: rgba(255, 255, 255, 0.11);
+  }
+}
+
+/* No border-radius here: being unlayered it would override each element's own
+   corners on focus. The outline already follows the element's shape. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Text fields draw their own focus (an accent border and soft halo, see
+   fieldStyles), and bare ones — a composer's title — show the caret. The
+   generic ring would box them in a hard rectangle, so they opt out here;
+   unlayered, like the rule above, or it would lose to it. */
+input:not([type="checkbox"], [type="radio"]):focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* Pointer users get no ring; keyboard users always do. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Thin, self-effacing scrollbars inside panes. */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes su-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.su-fade {
+  animation: su-fade 200ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes su-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.su-pop {
+  animation: su-pop 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes su-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.su-slide-in-left {
+  animation: su-slide-in-left 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes su-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+.su-drawer-in {
+  animation: su-drawer-in 280ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* Auth pages sit on the landing page's paper whichever theme is saved —
+   except Dark, where they go dark with the rest of the app. */
+.su-auth {
+  --ground: #f7f6f2;
+  --paper-dot: rgba(23, 22, 28, 0.07);
+}
+.dark .su-auth {
+  --ground: #121116;
+}
+
+/* The landing page's product mock, scaled as one picture: 1em = 1% of the frame. */
+.su-mock {
+  container-type: inline-size;
+}
+.su-mock .lp-mock-scale {
+  font-size: 1cqw;
+  font-family: var(--font-sans);
+  line-height: 1.45;
+  color: #201e1a;
+}
+
+/* The sticker blob: one slow turn a minute, like the landing page's stat blobs. */
+@keyframes su-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.su-blob {
+  animation: su-spin 60s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .su-blob {
+    animation: none !important;
+  }
+}
+
+@keyframes su-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Stagger a list of cards on first paint — 6 steps, then everything lands. */
+.su-stagger > * {
+  animation: su-fade 260ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+.su-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.su-stagger > *:nth-child(2) { animation-delay: 30ms; }
+.su-stagger > *:nth-child(3) { animation-delay: 60ms; }
+.su-stagger > *:nth-child(4) { animation-delay: 90ms; }
+.su-stagger > *:nth-child(5) { animation-delay: 120ms; }
+.su-stagger > *:nth-child(n + 6) { animation-delay: 150ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  .su-stagger > * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Writing surface (TipTap / ProseMirror). Body copy is set in a text serif for
+   long-form reading; headings stay in the UI sans so structure reads at a glance.
+   Tailwind's preflight strips list and heading styles, so they are restored here.
+--------------------------------------------------------------------------- */
+@layer components {
+  .writer .ProseMirror {
+    outline: none;
+    min-height: 45vh;
+    font-family: var(--font-serif);
+    font-size: var(--writer-size, 18px);
+    line-height: 1.75;
+    color: var(--ink);
+    caret-color: var(--primary);
+  }
+  .writer .ProseMirror > * + * {
+    margin-top: 0.9em;
+  }
+  .writer .ProseMirror h2 {
+    margin-top: 1.7em;
+    font-family: var(--font-sans);
+    font-size: 1.17em; /* 21px at the default 18px; scales with the text size setting */
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.4px;
+  }
+  .writer .ProseMirror h3 {
+    margin-top: 1.4em;
+    font-family: var(--font-sans);
+    font-size: 0.945em; /* 17px at 18px */
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .writer .ProseMirror > :first-child {
+    margin-top: 0;
+  }
+  .writer .ProseMirror ul {
+    list-style: disc;
+    padding-left: 1.4em;
+  }
+  .writer .ProseMirror ol {
+    list-style: decimal;
+    padding-left: 1.5em;
+  }
+  .writer .ProseMirror li + li {
+    margin-top: 0.3em;
+  }
+  .writer .ProseMirror li::marker {
+    color: var(--ink-3);
+  }
+  .writer .ProseMirror blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 1em;
+    color: var(--ink-2);
+    font-style: italic;
+  }
+  .writer .ProseMirror strong {
+    font-weight: 650;
+  }
+  .writer .ProseMirror ::selection {
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+  /* Placeholder on empty nodes (TipTap marks them with .is-empty / data-placeholder). */
+  .writer .ProseMirror .is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--ink-4);
+    pointer-events: none;
+  }
+}
+
+/* The passage the writing assistant is working on: stays marked while the
+   cursor is in the assistant's prompt box. */
+@layer components {
+  .writer .ProseMirror .assist-target {
+    border-radius: 3px;
+    background: color-mix(in oklab, var(--primary) 14%, transparent);
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--primary) 70%, transparent);
+  }
+}
+
+/* Unlayered on purpose: the global :focus-visible ring above is unlayered too,
+   and would otherwise box the whole writing surface. The caret shows focus. */
+.writer .ProseMirror:focus-visible {
+  outline: none;
+}
+
+/* The coach's paragraph review: an amber tint and margin bar on a flagged
+   paragraph, a wavy underline on the exact words. Amber, not violet, so it
+   never reads as the AI selection. */
+@layer components {
+  .writer .ProseMirror .coach-para {
+    position: relative;
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--warn) 7%, transparent);
+    box-shadow: -12px 0 0 color-mix(in oklab, var(--warn) 7%, transparent), 12px 0 0 color-mix(in oklab, var(--warn) 7%, transparent);
+    transition: background-color 150ms, box-shadow 150ms;
+  }
+  .writer .ProseMirror .coach-para::after {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: 0.3em;
+    bottom: 0.3em;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--warn);
+    opacity: 0.7;
+  }
+  .writer .ProseMirror .coach-para-active {
+    background: color-mix(in oklab, var(--warn) 15%, transparent);
+    box-shadow: -12px 0 0 color-mix(in oklab, var(--warn) 15%, transparent), 12px 0 0 color-mix(in oklab, var(--warn) 15%, transparent);
+  }
+  .writer .ProseMirror .coach-para-active::after {
+    opacity: 1;
+  }
+  .writer .ProseMirror .coach-phrase {
+    text-decoration: underline wavy color-mix(in oklab, var(--warn) 85%, transparent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+  }
+}

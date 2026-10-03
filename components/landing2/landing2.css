@@ -1,0 +1,532 @@
+/* ---------------------------------------------------------------------------
+   SchoolUp — playful landing (/landingpage2)
+
+   A sticker book on white paper. Lots of air; colour arrives in small,
+   confident doses — a pastel card, a pill behind one word, a sticker you can
+   pick up and throw. The collage illustrations are die-cut stickers
+   (public/images/stickers), so they sit on any colour.
+
+   Scoped under .l2 so the app's theme classes on <html> never reach it, and
+   kept in the components layer so Tailwind utilities on the same element win.
+--------------------------------------------------------------------------- */
+
+@layer components {
+  .l2 {
+    --bg: #ffffff;
+    --soft: #f7f6f2;
+    --ink: #17161c;
+    --ink-2: #5d5b66;
+    --ink-3: #9a98a3;
+    --line: #ecebef;
+
+    --sky: #42befc;
+    --sky-soft: #dff3fe;
+    --sun: #ffd23f;
+    --sun-soft: #fff4c7;
+    --coral: #ff6b4a;
+    --coral-soft: #ffe3db;
+    --lilac: #a98bff;
+    --lilac-soft: #eee8ff;
+    --mint: #34d399;
+    --mint-soft: #d6f6e8;
+    --pink: #ff8fcf;
+    --pink-soft: #ffe6f4;
+
+    --pad: 16px;
+    --radius-xl: 28px;
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+    position: relative;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    overflow-x: clip;
+    color-scheme: light;
+  }
+  @media (min-width: 768px) {
+    .l2 {
+      --pad: 32px;
+      --radius-xl: 36px;
+    }
+  }
+
+  html:has(.l2),
+  body:has(.l2) {
+    background: #ffffff;
+  }
+
+  .l2 ::selection {
+    background: var(--sun);
+    color: var(--ink);
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .l2-wrap {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: var(--pad);
+  }
+
+  /* ------------------------------------------------------------------ Type */
+
+  .l2-display {
+    font-family: var(--font-l2-display), var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+  }
+  /* Always two lines. The longest second line, "minus the guesswork" plus the
+     pill's padding, measures ~10.1em, so the size is capped to fit 10.6em in
+     the hero's text column (960px, or the screen less its gutters). Re-measure
+     if a longer word joins SWAP_WORDS in parts.tsx. */
+  .l2-h1 {
+    font-size: min(clamp(44px, 6.4vw, 96px), calc(min(960px, 100vw - 2 * var(--pad)) / 10.6));
+    line-height: 1.02;
+    white-space: nowrap;
+  }
+  .l2-h2 {
+    font-size: clamp(40px, 5.6vw, 84px);
+  }
+  .l2-lede {
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .l2-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding-inline: 14px;
+    border-radius: 999px;
+    background: var(--soft);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .l2-eyebrow > i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--mint) 25%, transparent);
+  }
+
+  /* SplitText masks: room for descenders. */
+  .l2 .l2-line-mask {
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  /* --------------------------------------------------------------- Buttons */
+
+  .l2-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 56px;
+    padding-inline: 26px 22px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      transform 400ms var(--ease-spring),
+      box-shadow 400ms var(--ease-out);
+    box-shadow: 0 10px 24px -12px rgba(23, 22, 28, 0.5);
+  }
+  .l2-btn:hover {
+    transform: translateY(-3px) rotate(-1.5deg);
+    box-shadow: 0 18px 30px -14px rgba(23, 22, 28, 0.55);
+  }
+  .l2-btn:active {
+    transform: translateY(0) scale(0.97);
+  }
+  .l2-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 400ms var(--ease-spring);
+  }
+  .l2-btn:hover svg {
+    transform: translateX(4px);
+  }
+  /* Primary: brand sky blue. White on #42befc sits near 2:1, so the label is deep navy. */
+  .l2-btn--sky {
+    background: var(--sky);
+    color: #04293c;
+    box-shadow: 0 12px 26px -12px rgba(66, 190, 252, 0.9);
+  }
+  .l2-btn--sky:hover {
+    box-shadow: 0 20px 34px -14px rgba(66, 190, 252, 0.95);
+  }
+  .l2-btn--ghost {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.5px var(--line);
+  }
+  .l2-btn--ghost:hover {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .l2-btn--sm {
+    height: 42px;
+    padding-inline: 18px 16px;
+    font-size: 14px;
+  }
+
+  /* ---------------------------------------------------------------- Header */
+
+  .l2-nav {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: min(calc(100% - 24px), 1100px);
+    height: 60px;
+    padding: 0 9px 0 20px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: saturate(1.6) blur(16px);
+    -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    box-shadow:
+      0 0 0 1px rgba(23, 22, 28, 0.06),
+      0 12px 32px -16px rgba(23, 22, 28, 0.2);
+    translate: -50% 0;
+  }
+  .l2-navlink {
+    position: relative;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    transition:
+      background-color 200ms,
+      color 200ms;
+  }
+  .l2-navlink:hover {
+    background: var(--soft);
+    color: var(--ink);
+  }
+
+  /* ------------------------------------------------------------------ Hero */
+
+  .l2-hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px var(--pad) 80px;
+    text-align: center;
+  }
+
+  /* The rotating word: a coloured pill whose width follows the word. Words
+     roll through it like a slot machine; clip-path keeps them inside the
+     rounded shape even while they are mid-flight. */
+  .l2-swap {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    height: 1.12em;
+    margin-top: -0.04em;
+    padding-inline: 0.18em;
+    border-radius: 0.28em;
+    background: var(--sun);
+    overflow: hidden;
+    clip-path: inset(0 round 0.28em);
+    rotate: -1.5deg;
+    line-height: 1.12;
+  }
+  .l2-swap-word {
+    position: absolute;
+    left: 0.18em;
+    top: 0;
+    white-space: nowrap;
+  }
+  .l2-swap-word:not(:first-child) {
+    visibility: hidden;
+  }
+  .l2-swap-measure {
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  /* --------------------------------------------------------------- Stickers */
+
+  .l2-sticker {
+    position: absolute;
+    left: var(--mx);
+    top: var(--my);
+    z-index: 2;
+    width: var(--ms);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  @media (min-width: 1024px) {
+    .l2-sticker {
+      left: var(--x);
+      top: var(--y);
+      width: var(--s);
+    }
+  }
+  .l2-sticker[data-mobile="false"] {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .l2-sticker[data-mobile="false"] {
+      display: block;
+    }
+  }
+  .l2-sticker [data-pop] {
+    rotate: var(--r);
+  }
+  .l2-sticker img {
+    pointer-events: none;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 14px 18px rgba(23, 22, 28, 0.16)) drop-shadow(0 2px 3px rgba(23, 22, 28, 0.1));
+  }
+  @media (pointer: fine) {
+    .l2-sticker {
+      cursor: grab;
+    }
+    .l2-sticker:active {
+      cursor: grabbing;
+    }
+  }
+
+
+  /* -------------------------------------------------------------- Patterns */
+
+  .l2-pat-dots {
+    background-image: radial-gradient(var(--pc) 2px, transparent 2.5px);
+    background-size: 22px 22px;
+  }
+  .l2-pat-grid {
+    background-image:
+      linear-gradient(var(--pc) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, var(--pc) 1.5px, transparent 1.5px);
+    background-size: 34px 34px;
+  }
+  .l2-pat-stripes {
+    background-image: repeating-linear-gradient(-45deg, var(--pc) 0 10px, transparent 10px 26px);
+  }
+  .l2-pat-rings {
+    background-image: repeating-radial-gradient(circle at 50% 60%, var(--pc) 0 2px, transparent 2px 30px);
+  }
+  .l2-pat-waves {
+    background-image: radial-gradient(circle at 50% 0, transparent 14px, var(--pc) 15px 18px, transparent 19px);
+    background-size: 38px 22px;
+  }
+
+  /* --------------------------------------------------------------- Product */
+
+  .l2-frame {
+    position: relative;
+    border-radius: var(--radius-xl);
+    padding: clamp(14px, 4vw, 64px) clamp(14px, 4vw, 64px) 0;
+    overflow: hidden;
+    background-color: var(--sky);
+    --pc: rgba(255, 255, 255, 0.28);
+  }
+  .l2-mock {
+    container-type: inline-size;
+    border-radius: clamp(10px, 1.4vw, 20px) clamp(10px, 1.4vw, 20px) 0 0;
+    overflow: hidden;
+    background: #141413;
+    box-shadow: 0 -10px 60px -20px rgba(4, 41, 60, 0.6);
+  }
+  .l2-mock .lp-mock-scale {
+    font-size: 1cqw;
+    font-family: var(--font-sans);
+    line-height: 1.45;
+    color: #201e1a;
+  }
+
+  /* The lp-chip look, shared with /landingpage's feature chips. */
+  .l2 .lp-chip {
+    border-radius: 18px;
+    background: #fff;
+    color: #201e1a;
+    font-family: var(--font-sans);
+    box-shadow:
+      0 0 0 1px rgba(23, 22, 28, 0.05),
+      0 24px 48px -20px rgba(23, 22, 28, 0.35);
+  }
+
+  /* -------------------------------------------------------------- Marquee */
+
+  .l2-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: clamp(54px, 6vw, 84px);
+    padding-inline: clamp(22px, 2.4vw, 36px);
+    border-radius: 999px;
+    font-family: var(--font-l2-display), var(--font-sans);
+    font-size: clamp(22px, 2.6vw, 38px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  /* ----------------------------------------------------------------- Bento */
+
+  .l2-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-xl);
+    background: #fff;
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 1px 2px rgba(23, 22, 28, 0.04);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .l2-card-media {
+    position: relative;
+    margin: 10px;
+    border-radius: calc(var(--radius-xl) - 10px);
+    overflow: hidden;
+    min-height: 300px;
+    transition: background-position 1.2s var(--ease-out);
+  }
+  .l2-card:hover .l2-card-media {
+    background-position: 18px 18px;
+  }
+
+  /* --------------------------------------------------------------- Stack */
+
+  .l2-stack-card {
+    position: sticky;
+    top: calc(96px + var(--i) * 18px);
+    border-radius: var(--radius-xl);
+    transform-origin: 50% 0;
+    will-change: transform;
+  }
+
+  /* ------------------------------------------------------------------ Notes */
+
+  /* The edge-fade mask also clips anything outside the row's box, so the row
+     carries enough padding for the tape, the hover lift and the full shadow
+     (deepest ~70px below a card on hover). Negative margins give that room
+     back, so the visible spacing between rows doesn't change. */
+  .l2-note-viewport {
+    padding-block: 40px 84px;
+    margin-block: -22px -66px;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    /* Notes fade in and out at the edges rather than being cut off. */
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  }
+  @media (pointer: fine) {
+    .l2-note-viewport {
+      cursor: grab;
+    }
+    .l2-note-viewport.is-grabbing {
+      cursor: grabbing;
+    }
+  }
+  .l2-note {
+    position: relative;
+    flex: none;
+    width: 290px;
+    border-radius: 24px;
+    padding: 26px;
+    rotate: var(--rot, 0deg);
+    /* Layered shadow: a tight contact edge, a soft mid-tone and a wide, faint
+       ambient — it fades out gradually instead of ending in a band. */
+    box-shadow:
+      0 1px 2px rgba(23, 22, 28, 0.04),
+      0 6px 14px -6px rgba(23, 22, 28, 0.08),
+      0 22px 40px -18px rgba(23, 22, 28, 0.14);
+    transition:
+      rotate 500ms var(--ease-spring),
+      translate 500ms var(--ease-spring),
+      box-shadow 500ms var(--ease-out);
+  }
+  @media (min-width: 768px) {
+    .l2-note {
+      width: 380px;
+      padding: 30px;
+    }
+  }
+  @media (hover: hover) {
+    .l2-note:hover {
+      rotate: 0deg;
+      translate: 0 -8px;
+      box-shadow:
+        0 2px 4px rgba(23, 22, 28, 0.05),
+        0 12px 24px -10px rgba(23, 22, 28, 0.1),
+        0 34px 56px -22px rgba(23, 22, 28, 0.2);
+    }
+  }
+
+  /* --------------------------------------------------------------- Confetti */
+
+  .l2-confetti {
+    position: fixed;
+    z-index: 80;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  /* ---------------------------------------------------------------- Loader */
+
+  .l2-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .l2-loader > div {
+    position: absolute;
+    inset: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .l2-loader > div {
+      animation: l2-failsafe-out 0s 4.4s forwards;
+    }
+    .l2 [data-intro] {
+      opacity: 0;
+      animation: l2-failsafe-in 0s 4.4s forwards;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .l2-loader {
+      display: none;
+    }
+  }
+  @keyframes l2-failsafe-out {
+    to {
+      transform: translateY(-100%);
+    }
+  }
+  @keyframes l2-failsafe-in {
+    to {
+      opacity: 1;
+    }
+  }
+}

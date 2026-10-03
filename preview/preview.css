@@ -1,0 +1,15 @@
+/* The static bundle reuses the app's tokens verbatim — edit them in
+   app/globals.css and both builds move together. */
+@import "../app/globals.css";
+
+/* next/font does not run here, so the faces the tokens point at are named
+   directly. The Google Fonts link in build.mjs loads them; without a network
+   the stacks in @theme fall through to the system UI font. */
+:root {
+  --font-sans-face: "Inter";
+  --font-mono-face: "Geist Mono";
+}
+
+@source "../app";
+@source "../components";
+@source "../preview";
