@@ -58,7 +58,7 @@ export const NOTES = [
   { quote: "The scholarship matches found two awards I had never heard of. One of them covered my whole first year.", name: "Adaeze", route: "Nigeria → University of Alberta" },
   { quote: "I did eleven mock interviews before the real one. By then the questions felt familiar instead of terrifying.", name: "Mateo", route: "Colombia → TU Delft" },
   { quote: "The deadline calendar did the remembering for me. I stopped waking up at 3am wondering what I had forgotten.", name: "Priya", route: "India → University of Toronto", placeholder: true },
-  { quote: "My speaking score went from 6.0 to 7.5. The seminar lessons were the part I actually looked forward to.", name: "Minh", route: "Vietnam → University of Melbourne", placeholder: true },
+  { quote: "The interview drills turned my answers from shaky to steady. The real one felt like another practice round.", name: "Minh", route: "Vietnam → University of Melbourne", placeholder: true },
   { quote: "Reach, target, safety finally made sense once I saw all my schools side by side.", name: "Aarav", route: "Nepal → University of Waterloo", placeholder: true },
   { quote: "The writing coach said my essay sounded like everyone else’s. It was right — and the rewrite got me in.", name: "Sofia", route: "Brazil → University of Edinburgh", placeholder: true },
   { quote: "I applied to six schools and never once opened a spreadsheet.", name: "Kwame", route: "Ghana → University of Manchester", placeholder: true },
@@ -84,7 +84,7 @@ export const PLANS = [
     price: 0,
     per: "free to start",
     blurb: "For students still deciding where to apply.",
-    items: ["College & scholarship search", "Deadline tracker for 5 schools", "2 essay reviews a month", "5 AI mock interviews a month", "Beginner English lessons"],
+    items: ["College & scholarship search", "Deadline tracker for 5 schools", "2 essay reviews a month", "5 AI mock interviews a month", "Community access"],
     cta: "Start free",
   },
   {
@@ -92,7 +92,7 @@ export const PLANS = [
     price: 14,
     per: "per month",
     blurb: "The full application toolkit, month to month.",
-    items: ["Everything in Starter", "Unlimited essay reviews", "Unlimited AI mock interviews", "Scholarship matching & alerts", "All English courses + certificate"],
+    items: ["Everything in Starter", "Unlimited essay reviews", "Unlimited AI mock interviews", "Scholarship matching & alerts", "Unlimited application tracking"],
     cta: "Go Pro",
   },
 ];

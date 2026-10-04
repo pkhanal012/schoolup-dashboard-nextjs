@@ -9,7 +9,7 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-l2-d
 export const metadata: Metadata = {
   title: "SchoolUp — Study abroad, minus the panic",
   description:
-    "English, schools, scholarships, essays, interviews and every deadline — finally in one friendly place. Free to start, no card needed.",
+    "Schools, scholarships, essays, interviews and every deadline — finally in one friendly place. Free to start, no card needed.",
 };
 
 export default function Page() {

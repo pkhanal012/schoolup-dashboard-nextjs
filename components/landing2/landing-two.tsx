@@ -20,6 +20,7 @@ import { ProductMock } from "@/components/landing/product-mock";
 import { FEATURES } from "@/components/landing/features";
 import { PlaneGame } from "./plane-game";
 import { LogoMark } from "./logo-mark";
+import { UniversitiesShowcase } from "./universities-showcase";
 import { blobPath, NOTES, NOTE_TONES, PaperPlane, PLANS, SCHOOLS, STATS, STEPS, STICKERS, SWAP_WORDS, Star, Sticker, COLORS } from "./parts";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, MotionPathPlugin, DrawSVGPlugin, Physics2DPlugin, CustomEase, CustomWiggle, useGSAP);
@@ -38,6 +39,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, MotionPa
 const NAV = [
   { href: "#product", label: "Product" },
   { href: "#toolkit", label: "Toolkit" },
+  { href: "/universities", label: "Universities" },
   { href: "#how", label: "How it works" },
   { href: "#pricing", label: "Pricing" },
 ];
@@ -422,7 +424,7 @@ export function LandingTwo() {
             const nav = one("[data-nav]");
             ScrollTrigger.create({
               start: 120,
-              onEnter: () => gsap.to(nav, { width: 760, duration: 0.8, ease: "expo.out" }),
+              onEnter: () => gsap.to(nav, { width: 860, duration: 0.8, ease: "expo.out" }),
               onLeaveBack: () => gsap.to(nav, { width: Math.min(window.innerWidth - 24, 1100), duration: 0.8, ease: "expo.out" }),
             });
           }
@@ -698,11 +700,17 @@ export function LandingTwo() {
           <Image src="/images/logos/logo_black.svg" alt="SchoolUp" width={91} height={19} className="h-[19px] w-auto" preload />
         </Link>
         <nav className="hidden items-center md:flex">
-          {NAV.map((n) => (
-            <a key={n.href} href={n.href} onClick={onAnchor} className="l2-navlink">
-              {n.label}
-            </a>
-          ))}
+          {NAV.map((n) =>
+            n.href.startsWith("#") ? (
+              <a key={n.href} href={n.href} onClick={onAnchor} className="l2-navlink">
+                {n.label}
+              </a>
+            ) : (
+              <Link key={n.href} href={n.href} className="l2-navlink">
+                {n.label}
+              </Link>
+            ),
+          )}
         </nav>
         <Link href="/login" className="l2-navlink ml-auto hidden sm:inline-flex md:ml-2">
           Log in
@@ -752,7 +760,7 @@ export function LandingTwo() {
             </h1>
 
             <p data-hero-foot data-intro className="l2-lede mt-6 max-w-[38ch]">
-              English, schools, scholarships, essays, interviews and every deadline — finally in one friendly place.
+              Schools, scholarships, essays, interviews and every deadline — finally in one friendly place.
             </p>
 
             <div data-hero-foot data-intro className="mt-9 flex flex-wrap justify-center gap-3">
@@ -985,6 +993,9 @@ export function LandingTwo() {
           </div>
         </section>
 
+        {/* ------------------------------------------------- Universities */}
+        <UniversitiesShowcase />
+
         {/* ------------------------------------------------------ Pricing */}
         <section id="pricing" className="py-[clamp(100px,12vw,180px)]">
           <div className="l2-wrap text-center">
@@ -1082,11 +1093,17 @@ export function LandingTwo() {
             </div>
             <div className="flex gap-16 text-[15px]">
               <div className="flex flex-col gap-2">
-                {NAV.map((n) => (
-                  <a key={n.href} href={n.href} onClick={onAnchor} className="text-[var(--ink-2)] transition-colors hover:text-[var(--ink)]">
-                    {n.label}
-                  </a>
-                ))}
+                {NAV.map((n) =>
+                  n.href.startsWith("#") ? (
+                    <a key={n.href} href={n.href} onClick={onAnchor} className="text-[var(--ink-2)] transition-colors hover:text-[var(--ink)]">
+                      {n.label}
+                    </a>
+                  ) : (
+                    <Link key={n.href} href={n.href} className="text-[var(--ink-2)] transition-colors hover:text-[var(--ink)]">
+                      {n.label}
+                    </Link>
+                  ),
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <Link href="/login" className="text-[var(--ink-2)] transition-colors hover:text-[var(--ink)]">

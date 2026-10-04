@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, Flame, Mic } from "lucide-react";
+import { Check, Mic } from "lucide-react";
 
 /*
  * The five tools, each staged as a collage illustration with one small piece
@@ -23,20 +23,32 @@ function Bar({ pct, tone = "#0a7cb3" }: { pct: number; tone?: string }) {
   );
 }
 
-const english = (
-  <div className="lp-chip max-w-[340px] p-4">
+/* Mirrors the app's Applications page: each school, what is done, what is next. */
+const applications = (
+  <div className="lp-chip max-w-[360px] p-4">
     <div className="flex items-center justify-between text-[12px] text-[#8a8884]">
-      <span>IELTS Academic · Band 7 track</span>
-      <span className="flex items-center gap-1 text-[#97650a]">
-        <Flame className="size-3.5" /> 12 days
+      <span>Applications · 4 open</span>
+      <span className="flex items-center gap-1 text-[#2f7d47]">
+        <Check className="size-3.5" /> 1 ready
       </span>
     </div>
-    <div className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em]">Lesson 14 — Speaking in seminars</div>
-    <div className="mt-3 flex items-center gap-3">
-      <div className="flex-1">
-        <Bar pct={47} />
-      </div>
-      <span className="text-[12px] tabular-nums text-[#54534f]">14 / 30</span>
+    <div className="mt-2 flex flex-col gap-2.5">
+      {[
+        ["University of Toronto", "Next: statement of purpose", 3, 6, "#0a7cb3"],
+        ["University of Waterloo", "Next: reference from Dr. Shrestha", 2, 6, "#0a7cb3"],
+        ["Arizona State University", "Ready to submit", 6, 6, "#2f7d47"],
+      ].map(([name, next, done, total, tone]) => (
+        <div key={name as string}>
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="truncate text-[13.5px] font-semibold">{name}</span>
+            <span className="text-[12px] tabular-nums text-[#54534f]">
+              {done}/{total}
+            </span>
+          </div>
+          <div className="mb-1 truncate text-[11.5px] text-[#8a8884]">{next}</div>
+          <Bar pct={((done as number) / (total as number)) * 100} tone={tone as string} />
+        </div>
+      ))}
     </div>
   </div>
 );
@@ -117,11 +129,11 @@ const interview = (
 export const FEATURES: Feature[] = [
   {
     n: "01",
-    title: "Learn English",
-    body: "Courses built around the English you will actually use abroad — seminars, essays, interviews. Finish each track with a certificate.",
+    title: "Track applications",
+    body: "Every school you apply to, with what is done, what is next and who you are waiting on — and every deadline on one calendar.",
     art: "/images/illustratioin/calender.png",
     tint: "#ece6d6",
-    chip: english,
+    chip: applications,
   },
   {
     n: "02",

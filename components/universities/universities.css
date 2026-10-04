@@ -1,0 +1,46 @@
+/* Public university pages. Tokens and base pieces come from landing2.css; this
+   only adds what the directory and profile pages need on top. */
+@layer components {
+  /* Hero pieces wait for the motion layer; if scripts never run, they appear anyway. */
+  @media (prefers-reduced-motion: no-preference) {
+    .l2 [data-u-hero],
+    .l2 [data-u-pop],
+    .l2 [data-u-split] {
+      opacity: 0;
+      animation: u-failsafe 0s 2.4s forwards;
+    }
+  }
+  @keyframes u-failsafe {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Masked words keep their descenders. */
+  .l2 [data-u-split] > div {
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  /* Anchored sections clear the floating nav and the sticky tab bar. */
+  .u-section {
+    scroll-margin-top: 150px;
+  }
+
+  .u-tabs {
+    scrollbar-width: none;
+  }
+  .u-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .u-faq summary {
+    list-style: none;
+  }
+  .u-faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .u-faq[open] .u-faq-icon {
+    rotate: 45deg;
+  }
+}
