@@ -21,6 +21,7 @@ import { FEATURES } from "@/components/landing/features";
 import { PlaneGame } from "./plane-game";
 import { LogoMark } from "./logo-mark";
 import { UniversitiesShowcase } from "./universities-showcase";
+import { HERO_STYLES, HeroSwitcher } from "./heroes";
 import { blobPath, NOTES, NOTE_TONES, PaperPlane, PLANS, SCHOOLS, STATS, STEPS, STICKERS, SWAP_WORDS, Star, Sticker, COLORS } from "./parts";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, MotionPathPlugin, DrawSVGPlugin, Physics2DPlugin, CustomEase, CustomWiggle, useGSAP);
@@ -208,10 +209,59 @@ function endlessNotes(q: (sel: string) => Element[], autoplay: boolean) {
   };
 }
 
+/* The picked hero style, kept in localStorage so a refresh lands on the same one. */
+const HERO_KEY = "schoolup:hero";
+let heroFallback = 0; // when storage is blocked
+function readHero() {
+  try {
+    const saved = Number(localStorage.getItem(HERO_KEY) ?? heroFallback);
+    return saved > 0 && saved < HERO_STYLES.length ? saved : 0;
+  } catch {
+    return heroFallback;
+  }
+}
+function writeHero(i: number) {
+  heroFallback = i;
+  try {
+    localStorage.setItem(HERO_KEY, String(i));
+  } catch {}
+  window.dispatchEvent(new Event(HERO_KEY));
+}
+function subscribeHero(fn: () => void) {
+  window.addEventListener(HERO_KEY, fn);
+  return () => window.removeEventListener(HERO_KEY, fn);
+}
+
 export function LandingTwo() {
   const root = React.useRef<HTMLDivElement>(null);
   const lenisRef = React.useRef<Lenis | null>(null);
   const lastBurst = React.useRef(0);
+
+  // Hero style explorer: 0 is the sticker book below; the rest live in ./heroes.
+  // The first pick waits out the loader; later switches play straight away.
+  const heroStyle = React.useSyncExternalStore(subscribeHero, readHero, () => 0);
+  const [heroDelay, setHeroDelay] = React.useState("2.7s");
+  const pickHero = React.useCallback((i: number) => {
+    setHeroDelay("0s");
+    writeHero(i);
+    if (lenisRef.current) lenisRef.current.scrollTo(0, { immediate: true });
+    else window.scrollTo(0, 0);
+  }, []);
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(id);
+  }, [heroStyle]);
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest("input, textarea, [contenteditable]")) return;
+      const n = HERO_STYLES.length;
+      if (e.key === "ArrowRight") pickHero((heroStyle + 1) % n);
+      if (e.key === "ArrowLeft") pickHero((heroStyle - 1 + n) % n);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [heroStyle, pickHero]);
+  const Variant = HERO_STYLES[heroStyle].Hero;
 
   React.useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -694,6 +744,8 @@ export function LandingTwo() {
         </div>
       </div>
 
+      <HeroSwitcher index={heroStyle} onChange={pickHero} />
+
       {/* ---------------------------------------------------------- Nav */}
       <header data-nav data-intro className="l2-nav">
         <Link href="/" aria-label="SchoolUp home" className="mr-auto">
@@ -722,7 +774,13 @@ export function LandingTwo() {
 
       <main>
         {/* --------------------------------------------------------- Hero */}
-        <section data-hero className="l2-hero pt-[200px] lg:pt-[120px]">
+        {/* The original stays mounted (hidden) while a variant shows, so the GSAP context keeps its targets. */}
+        {Variant && (
+          <div style={{ "--hx-delay": heroDelay } as React.CSSProperties}>
+            <Variant key={heroStyle} />
+          </div>
+        )}
+        <section data-hero className="l2-hero pt-[200px] lg:pt-[120px]" style={Variant ? { display: "none" } : undefined}>
           {STICKERS.map((s, i) => (
             <Sticker key={i} def={s} index={i} />
           ))}
